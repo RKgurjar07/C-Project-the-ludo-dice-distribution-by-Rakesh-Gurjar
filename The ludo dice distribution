@@ -1,1 +1,71 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
+// Function to simulate rolling one die
+int roll_one_die() {
+    return (rand() % 6) + 1;  // Returns a number between 1 and 6
+}
+
+int main() {
+    // Seed the random number generator
+    srand(time(NULL));
+    
+    // Number of simulations
+    int total_rolls = 1000000;
+    
+    // Array to store counts for sums 2 through 12
+    // Index 0 and 1 won't be used, sums range from 2 to 12
+    int counts[13] = {0};  // Initialize all counts to 0
+    
+    // Simulate rolling two dice a million times
+    printf("Rolling two dice %d times...\n\n", total_rolls);
+    
+    for (int i = 0; i < total_rolls; i++) {
+        int die1 = roll_one_die();
+        int die2 = roll_one_die();
+        int sum = die1 + die2;
+        
+        // Increment the count for this sum
+        counts[sum]++;
+    }
+    
+    // Print the probability distribution report
+    printf("====================================================\n");
+    printf("        LUDO DICE DISTRIBUTION ANALYSIS\n");
+    printf("====================================================\n");
+    printf("Sum\tCount\t\tSimulated %%\tTheoretical %%\n");
+    printf("----------------------------------------------------\n");
+    
+    // Theoretical probabilities (out of 36 possible outcomes)
+    int theoretical_ways[13] = {0, 0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1};
+    
+    // Display results for each possible sum (2 through 12)
+    for (int sum = 2; sum <= 12; sum++) {
+        double simulated_percent = (counts[sum] * 100.0) / total_rolls;
+        double theoretical_percent = (theoretical_ways[sum] * 100.0) / 36.0;
+        
+        printf("%d\t%d\t\t%.2f%%\t\t%.2f%%\n", 
+               sum, counts[sum], simulated_percent, theoretical_percent);
+    }
+    
+    printf("====================================================\n");
+    printf("Total rolls: %d\n", total_rolls);
+    printf("====================================================\n");
+    
+    // Additional analysis: Find the most common sum
+    int max_count = 0;
+    int most_common = 0;
+    
+    for (int sum = 2; sum <= 12; sum++) {
+        if (counts[sum] > max_count) {
+            max_count = counts[sum];
+            most_common = sum;
+        }
+    }
+    
+    printf("\nMost common sum: %d (appeared %d times)\n", most_common, max_count);
+    printf("As predicted by theory, 7 should be most common!\n");
+    
+    return 0;
+}
